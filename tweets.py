@@ -8,6 +8,7 @@ class Tweet:
         self.place = place
         self.text = text
         self.date = date
+        self.hashtag = self.get_hashtag(self.text)
         
     def set_place(self, place):
         self.place = place
@@ -27,8 +28,25 @@ class Tweet:
     def get_date(self):
         return self.date
     
+    def get_hashtag(self, text):
+        hashtag = ""
+        in_hashtag = False
+        for letter in text:
+            if in_hashtag:
+                if letter == " ":
+                    in_hashtag = False
+                    break
+                else:
+                    hashtag += letter
+            if letter == "#":
+                in_hashtag = True
+                
+        return hashtag
+                
+    
     def __str__(self):
         return "(" + self.place + ", " + self.text + ", " + self.date + ")"
+        
     
 
 def load_tweets(filename, delimiter):
