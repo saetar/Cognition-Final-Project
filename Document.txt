@@ -1,0 +1,4 @@
+'''
+   Topic class.
+   Authors: Daniel Lewitz & Ryan Saeta
+'''
