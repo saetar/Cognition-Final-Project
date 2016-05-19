@@ -16,6 +16,9 @@ class Tweet:
     def set_text(self, text):
         self.text = text
         
+    def get_words(self):
+        return self.text.split()
+        
     def set_date(self, date):
         self.date = date
         
