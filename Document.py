@@ -20,6 +20,9 @@ class Document:
         
     def __str__(self):
         return self.tweet.__str__()
+    
+    def get_topics(self):
+        return self.topics
         
     def randomize(self, topics_list):
         '''
@@ -42,7 +45,7 @@ class Document:
             for j in range(len(topics_distribution)):
                 prob_topics.append(topics_distribution[j] * word_distribution[j])
                 
-            index = 0    
+            index = random.randint(0, len(prob_topics)-1)   
             if not sum(prob_topics) == 0:
                 prob_topics = [prob_topic/sum(prob_topics) for prob_topic in prob_topics]
                 assignment = random.random()
