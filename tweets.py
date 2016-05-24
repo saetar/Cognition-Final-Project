@@ -3,13 +3,46 @@
    Authors: Daniel Lewitz & Ryan Saeta
 '''
 
+import re
+
 class Tweet:
     def __init__(self, place="", text="", date=""):
         self.place = place
-        self.text = text
+        self.text = self.clean_text(text)
         self.date = date
         self.hashtag = self.get_hashtag(self.text)
         
+    def clean_text(self,text):
+        stops = self.load_stops('stop_words.txt')
+        new_txt = []
+        txt = text.split()
+        rx = re.compile('\W+')        
+        for w in txt:
+            if 'http' in w:
+                txt.remove(w)
+            elif '#' in w:
+                txt.remove(w)
+            elif w in stops:
+                txt.remove(w)
+            elif not w.isalpha():
+                txt.remove(w)
+            else:
+                n_w = w.lower()    
+                n_w = rx.sub('', n_w).strip()
+                new_txt.append(n_w)
+        s = ''
+        for w in new_txt:
+            s += w + " "
+        return s
+    
+    def load_stops(self, filename):
+        f = open(filename, 'r')
+        stops = []
+        for l in f.readlines():
+            if not l[0] == '(':
+                stops.append(l.strip())
+        return stops
+    
     def set_place(self, place):
         self.place = place
         

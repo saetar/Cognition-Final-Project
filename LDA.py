@@ -13,7 +13,8 @@ class LDA_model:
         for l in f.readlines():
             line = l.strip().split(delimiter)
             tweet = Tweet(place=line[0], text=line[2], date=line[1])
-            tweets.append(tweet)
+            if len(tweet.get_words()) > 3:
+                tweets.append(tweet)
         return self.make_documents(tweets)
         
     def make_documents(self, tweets):
@@ -33,7 +34,15 @@ class LDA_model:
     
     def train(self, num_iters):
         for i in range(num_iters):
+            print(i)
             self.improve_topics()
             
     def get_documents(self):
         return self.documents
+        
+    def __str__(self):
+        s = ""
+        for t in self.topics:
+            s += t.__str__() + "\n"
+            
+        return s

@@ -42,14 +42,15 @@ class Document:
             for j in range(len(topics_distribution)):
                 prob_topics.append(topics_distribution[j] * word_distribution[j])
                 
+            index = 0    
             if not sum(prob_topics) == 0:
                 prob_topics = [prob_topic/sum(prob_topics) for prob_topic in prob_topics]
-            assignment = random.random()
-            p = 0.
-            index = -1
-            while p < assignment:
-                index += 1
-                p += prob_topics[index]
+                assignment = random.random()
+                p = 0.
+                index = -1
+                while p < assignment:
+                    index += 1
+                    p += prob_topics[index]
             self.topics[i] = index
             topics_list[index].add_word(words[i])
         return topics_list
