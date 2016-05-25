@@ -1,11 +1,19 @@
 from tweets import Tweet
 from Document import Document
 from topics import Topic
+import numpy as np
 
 class LDA_model:
-    def __init__(self, documents_filepath, k):
+    def __init__(self, documents_filepath, k, alpha =.5, beta =.5):
         self.documents = self.get_docs(documents_filepath, "\t")
-        self.topics = [Topic() for i in range(k)]
+        self.V = []
+        for doc in self.documents:
+            words = doc.get_tweet_words()
+            for word in words:
+                if not word in self.V:
+                    self.V.append(word)
+        self.topics = np.zeroes((k, len(self.V))) + beta
+
         
     def get_docs(self, filepath, delimiter):
         tweets = []
