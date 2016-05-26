@@ -1,6 +1,6 @@
 import LDA
 print("Loading corpus")
-lda = LDA.LDA_model("twitterLab/data/my_life.txt", 10, alpha = .02, beta = .02)
+lda = LDA.LDA_model("twitterLab/data/my_life.txt", 20, alpha = .8, beta = .8)
 """print("Randomizing topics")
 lda.randomize_topics()
 print("Started Training")

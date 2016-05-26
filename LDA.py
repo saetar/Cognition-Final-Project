@@ -102,7 +102,7 @@ class LDA_model:
         for i in range(min(10, len(self.topics))):
             topic = self.topics[i]
             argsort = topic.argsort()
-            indicies = argsort[-10:]
-            words = [str((self.V[j] ,self.topics[i,j])) for j in indicies]
+            indicies = argsort[-20:-10]
+            words = [str((self.V[j] , int(self.topics[i,j]))) for j in indicies]
             output = "Topic {}: {}".format(i, ' '.join(words))
             print(output)
