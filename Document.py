@@ -18,6 +18,9 @@ class Document:
     def set_tweet(self, tweet):
         self.tweet = tweet
     
+    def get_topics(self):
+        return self.topics
+    
     def get_tweet_words(self):
         return self.tweet.get_words()
         

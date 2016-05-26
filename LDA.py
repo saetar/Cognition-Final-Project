@@ -12,7 +12,22 @@ class LDA_model:
             for word in words:
                 if not word in self.V:
                     self.V.append(word)
-        self.topics = np.zeroes((k, len(self.V))) + beta
+        self.doc_topic_counts = np.zeros((len(self.documents), k)) + alpha
+        self.topics = np.zeros((k, len(self.V))) + beta
+        self.topic_word_counts = np.zeros(k) + len(self.V)*beta
+        for i in range(len(self.documents)):
+            document = self.documents[i]
+            topics_list = []
+            for word in document.get_tweet_words():
+                assignment = np.random.randint(0,k)
+                self.topic_word_counts[assignment] +=1
+                topics_list.append(assignment)
+            
+                self.doc_topic_counts[i,assignment] += 1
+                self.topics[assignment, self.V.index(word)] +=1
+            document.set_topics(topics_list)
+
+                
 
         
     def get_docs(self, filepath, delimiter):
@@ -30,15 +45,43 @@ class LDA_model:
         for tweet in tweets:
             docs.append(Document(tweet))
         return docs
-    
     def randomize_topics(self):
         for document in self.documents:
             self.topics = document.randomize(self.topics)
-        
+
         
     def improve_topics(self):
-        for document in self.documents:
-            self.topics = document.reassign(self.topics)
+    #Gibbs sampling
+        for i in range(len(self.documents)):
+            document = self.documents[i]
+            topics_list = document.get_topics()
+            word_list = document.get_tweet_words()
+            for j in range(len(word_list)):
+                assignment = topics_list[j]
+                word = word_list[j]
+                self.doc_topic_counts[i, assignment] -=1
+                self.topics[assignment, self.V.index(word)] -=1
+                self.topic_word_counts[assignment] -=1 
+                
+                p = self.topics[:, self.V.index(word)]
+                p = self.doc_topic_counts[i] * p
+                p =  p / self.topic_word_counts
+                
+                new_assignment = np.random.multinomial(1, p/p.sum()).argmax()
+                
+
+                
+                self.doc_topic_counts[i, new_assignment] +=1
+                self.topics[new_assignment, self.V.index(word)] +=1
+                self.topic_word_counts[new_assignment] +=1   
+                topics_list[j] = new_assignment
+                
+                  
+                
+                
+    
+       # for document in self.documents:
+        #    self.topics = document.reassign(self.topics)
     
     def train(self, num_iters):
         for i in range(num_iters):
@@ -54,3 +97,12 @@ class LDA_model:
             s += t.__str__() + "\n"
             
         return s
+        
+    def preview(self):
+        for i in range(min(10, len(self.topics))):
+            topic = self.topics[i]
+            argsort = topic.argsort()
+            indicies = argsort[-10:]
+            words = [str((self.V[j] ,self.topics[i,j])) for j in indicies]
+            output = "Topic {}: {}".format(i, ' '.join(words))
+            print(output)

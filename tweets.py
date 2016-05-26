@@ -18,17 +18,19 @@ class Tweet:
         txt = text.split()
         rx = re.compile('\W+')        
         for w in txt:
-            if 'http' in w:
+            n_w = w.lower()
+            n_w = rx.sub('', n_w).strip()
+            if 'http' in n_w:
                 txt.remove(w)
-            elif '#' in w:
+            elif '#' in n_w:
                 txt.remove(w)
-            elif w in stops:
+            elif n_w in stops:
                 txt.remove(w)
-            elif not w.isalpha():
+            elif not n_w.isalpha():
+                txt.remove(w)
+            elif len(n_w) <= 2:
                 txt.remove(w)
             else:
-                n_w = w.lower()    
-                n_w = rx.sub('', n_w).strip()
                 new_txt.append(n_w)
         s = ''
         for w in new_txt:
