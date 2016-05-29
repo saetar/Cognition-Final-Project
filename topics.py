@@ -7,6 +7,9 @@ class Topic:
     def __init__(self):
         self.words = {}
         
+    def __str__(self):
+        return str(self.words)
+        
     def add_word(self, word):
         if word in self.words:
             self.words[word] += 1

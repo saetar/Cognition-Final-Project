@@ -17,6 +17,12 @@ class Document:
         
     def set_tweet(self, tweet):
         self.tweet = tweet
+    
+    def get_topics(self):
+        return self.topics
+    
+    def get_tweet_words(self):
+        return self.tweet.get_words()
         
     def __str__(self):
         return self.tweet.__str__()
@@ -35,21 +41,22 @@ class Document:
     def reassign(self, topics_list):
         words = self.tweet.get_words()
         for i in range(len(words)):
+            topics_list[topics[i]][words[i]] -= 1
             self.topics[i] = -1
             topics_distribution = self.calculate_topics_distribution(topics_list)
             word_distribution = self.calculate_word_distribution(topics_list, words[i])
             prob_topics = []
             for j in range(len(topics_distribution)):
                 prob_topics.append(topics_distribution[j] * word_distribution[j])
-                
+            index = 0    
             if not sum(prob_topics) == 0:
                 prob_topics = [prob_topic/sum(prob_topics) for prob_topic in prob_topics]
-            assignment = random.random()
-            p = 0.
-            index = -1
-            while p < assignment:
-                index += 1
-                p += prob_topics[index]
+                assignment = random.random()
+                p = 0.
+                index = -1
+                while p < assignment:
+                    index += 1
+                    p += prob_topics[index]
             self.topics[i] = index
             topics_list[index].add_word(words[i])
         return topics_list
