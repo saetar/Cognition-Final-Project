@@ -13,7 +13,7 @@ def make_tweets(filename):
 def main(args):
 	print("Made it bois")
 	tweets = make_tweets(args[1])
-	outputfile = open(args[2], 'w')
+	outputfile = open(args[2], 'a')
 	print(len(tweets))
 	for tweet in tweets:
 		outputfile.write("BS\tBS\t" + tweet + '\n')
