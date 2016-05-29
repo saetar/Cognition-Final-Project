@@ -1,16 +1,31 @@
+import sys
+sys.path.insert(0, 'model')
+
+import scipy as sp
+from scipy import stats
 import LDA
 print("Loading corpus")
-lda = LDA.LDA_model("twitterLab/data/my_life.txt", 20, alpha = .8, beta = .8)
-"""print("Randomizing topics")
-lda.randomize_topics()
-print("Started Training")
-lda.train(5)
+files = [
+    "data/tweets/ss2016.txt", 
+    "data/tweets/blm.txt", 
+    "data/tweets/hb2.txt", 
+    "data/tweets/indy500.txt", 
+    "data/tweets/okcvgsw.txt", 
+    "data/tweets/science.txt",
+    "data/tweets/blm_old.txt",
+    "data/tweets/science_recent.txt",
+    "data/tweets/hb2_recent.txt"
+]
+lda = LDA.LDA_model(files, 6, alpha = 0.01, beta = .01)
 
-print(lda)
-
-documents = lda.get_documents()
-for i in range(100):
-    print(documents[i].get_topics(), documents[i].__str__())
-    """
-lda.train(20)
-lda.preview()
+print("Training")
+lda.train(100)
+print("Done training")
+lda.preview_topics()
+lda.preview_documents()
+m = lda.origin_topic_count()
+chisq, p, dof, expected = stats.chi2_contingency(m)
+print(chisq, p, dof)
+#chisq_p = 1 - sp.stats.chi2cd(chisq, (len(m) - 1)*(len(m[0]) - 1))
+#print(chisq_p)
+print(lda.eval_categories())

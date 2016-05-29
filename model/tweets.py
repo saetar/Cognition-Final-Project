@@ -13,7 +13,7 @@ class Tweet:
         self.hashtag = self.get_hashtag(self.text)
         
     def clean_text(self,text):
-        stops = self.load_stops('stop_words.txt')
+        stops = self.load_stops('data/stop_words.txt')
         new_txt = []
         txt = text.split()
         rx = re.compile('\W+')        
@@ -50,6 +50,12 @@ class Tweet:
         
     def set_text(self, text):
         self.text = text
+        
+    def set_origin(self, origin):
+        self.origin = origin
+        
+    def get_origin(self):
+        return self.origin
         
     def get_words(self):
         return self.text.split()

@@ -11,6 +11,7 @@ class Document:
     def __init__(self, tweet):
         self.tweet = tweet
         self.topics = []
+        self.origin = tweet.get_origin()
         
     def set_topics(self, topics):
         self.topics = topics
@@ -18,14 +19,17 @@ class Document:
     def set_tweet(self, tweet):
         self.tweet = tweet
     
-    def get_topics(self):
-        return self.topics
-    
     def get_tweet_words(self):
         return self.tweet.get_words()
         
     def __str__(self):
         return self.tweet.__str__()
+    
+    def get_topics(self):
+        return self.topics
+        
+    def get_origin(self):
+        return self.origin
         
     def randomize(self, topics_list):
         '''
@@ -41,7 +45,6 @@ class Document:
     def reassign(self, topics_list):
         words = self.tweet.get_words()
         for i in range(len(words)):
-            topics_list[topics[i]][words[i]] -= 1
             self.topics[i] = -1
             topics_distribution = self.calculate_topics_distribution(topics_list)
             word_distribution = self.calculate_word_distribution(topics_list, words[i])
