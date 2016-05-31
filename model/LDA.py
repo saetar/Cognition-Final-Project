@@ -132,8 +132,9 @@ class LDA_model:
             topic = self.topics[i]
             argsort = topic.argsort()
             indicies = argsort[-10:]
-            words = [str((self.V[j] , int(self.topics[i,j]))) for j in indicies]
-            output = "Topic {}: {}".format(i, ' '.join(words))
+            #words = [str((self.V[j] , int(self.topics[i,j]))) for j in indicies]
+            words = [str(self.V[j]) for j in indicies]
+            output = "Topic {}: {}".format(i, ', '.join(words))
             print(output)
             
     def get_origin_dict(self, doc_limit=None):
