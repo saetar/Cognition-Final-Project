@@ -1,6 +1,6 @@
 from tweets import Tweet
 from Document import Document
-from topics import Topic
+
 import numpy as np
 from collections import Counter
 import scipy as sp
@@ -34,6 +34,10 @@ class LDA_model:
 
         
     def get_docs(self, filepaths, delimiter):
+        ''' 
+        Takes a list of files and a delimiter and returns a list of 
+        tweet objects. 
+        '''
         tweets = []
         for filepath in filepaths:
             f = open(filepath, 'r')
@@ -47,14 +51,15 @@ class LDA_model:
         return self.make_documents(tweets)
         
     def make_documents(self, tweets):
+        '''
+        Takes a list of Tweet objects and returns a list of Document objects,
+        each containing one tweet.
+        '''
         docs = []
         for tweet in tweets:
             docs.append(Document(tweet))
         return docs
-    def randomize_topics(self):
-        for document in self.documents:
-            self.topics = document.randomize(self.topics)
-
+        
         
     def improve_topics(self):
         """One iteration of Gibbs sampling for each word w in document d,
@@ -88,14 +93,18 @@ class LDA_model:
                 
     
     def train(self, num_iters):
+        '''
+        Improves topics num_iteres times.
+        '''
         for i in range(num_iters):
-#            print(i)
             self.improve_topics()
-            
-    def get_documents(self):
-        return self.documents
         
     def categorize_documents(self):
+        '''
+        Creates a list of (category, document) tuples where the
+        category is the most most frequent topic assignment accross
+        words in document.
+        '''
         cat_docs = []
         for doc in self.documents:
             counts = Counter(doc.get_topics())
@@ -104,6 +113,10 @@ class LDA_model:
         return cat_docs
             
     def origin_categories(self):
+        '''
+        Creates a dictionary where keys are the origins and values
+        are lists of categories from documents of that origin. 
+        '''
         d = {}
         cat_docs = self.categorize_documents()
         for doc, common in cat_docs:
@@ -115,6 +128,10 @@ class LDA_model:
         return d
         
     def eval_categories(self):
+        '''
+        Evaluates category assignments by using a chi-squared test
+        of independence for categories of the same origin.
+        '''
         ps = []
         d = self.origin_categories()
         for origin, lst in d.items():
@@ -132,6 +149,9 @@ class LDA_model:
         return s
         
     def preview_topics(self):
+        '''
+        Displays 10 most common words in first 10 (or fewer) topics.
+        '''
         for i in range(min(10, len(self.topics))):
             topic = self.topics[i]
             argsort = topic.argsort()
@@ -142,6 +162,10 @@ class LDA_model:
             print(output)
             
     def get_origin_dict(self, doc_limit=None):
+        '''
+        Creates a dictionary where keys are hashtags and values are lists of documents
+        pertaining to that hashtag.
+        '''
         origins_dict = {}
         for doc in self.documents:
             doc_origin = doc.get_origin()
@@ -156,6 +180,9 @@ class LDA_model:
         return origins_dict
             
     def preview_documents(self):
+        '''
+        Displays topic assignments for each word in first 10 documents of each origin.
+        '''
         origins_dict = self.get_origin_dict(doc_limit=10)              
         for key, value in origins_dict.items():
             print("Origin: ", key)
@@ -164,6 +191,10 @@ class LDA_model:
                 print('\t', val.get_topics())
                 
     def origin_topic_count(self):
+        '''
+        Creates a list for each origin where each element is a count of the words assigned
+        to each topic. Element[i,j] is the number of words in origin i assigned to topic j
+        '''
         origins_dict = self.get_origin_dict()
         counts = [] 
         for origin, docs in origins_dict.items():

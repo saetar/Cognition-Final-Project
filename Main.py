@@ -6,9 +6,6 @@ from scipy import stats
 sys.path.insert(0, 'model')
 import LDA
 
-args = sys.argv
-
-
 def help():
 	print("An LDA model tester for tweets\n")
 
@@ -26,86 +23,90 @@ def help():
 	print("help: get help again")
 	sys.exit(0)
 
+def main(args):
+    if len(args) < 4:
+        help()
 
-if len(args) < 4:
-	help()
+    if float(args[1]):
+        alpha = float(args[1])
+        if alpha < 0 or alpha > 1:
+            help()
+    else:
+        help()
 
-if float(args[1]):
-	alpha = float(args[1])
-	if alpha < 0 or alpha > 1:
-		help()
-else:
-	help()
+    if float(args[2]):
+        beta = float(args[2])
+        if beta < 0 or beta > 1:
+            help()
+    else:
+        help()
 
-if float(args[2]):
-	beta = float(args[2])
-	if beta < 0 or beta > 1:
-		help()
-else:
-	help()
+    if int(args[3]):
+        num_topics = int(args[3])
+        if num_topics < 1:
+            help()
+    else:
+        help()
 
-if int(args[3]):
-	num_topics = int(args[3])
-	if num_topics < 1:
-		help()
-else:
-	help()
-
-if int(args[4]):
-	training = int(args[4])
-	if training < 1:
-		help()
-else:
-	help()
+    if int(args[4]):
+        training = int(args[4])
+        if training < 1:
+            help()
+    else:
+        help()
 
 
-if 'help' in args:
-	help()
-	sys.exit(0)
+    if 'help' in args:
+        help()
+        sys.exit(0)
 
-preview_topics = False
-preview_documents = False
-sts = False
+    preview_topics = False
+    preview_documents = False
+    sts = False
 
-if 'topics' in args:
-	preview_topics = True
+    if 'topics' in args:
+        preview_topics = True
 
-if 'documents' in args:
-	preview_documents = True
+    if 'documents' in args:
+        preview_documents = True
 
-if 'stats' in args:
-	sts = True
+    if 'stats' in args:
+        sts = True
 
-print("Loading corpus")
+    print("Loading corpus")
 
-files = [
-    "data/tweets/ss2016.txt", 
-    "data/tweets/blm.txt", 
-    "data/tweets/hb2.txt", 
-    "data/tweets/indy500.txt", 
-    "data/tweets/okcvgsw.txt", 
-    "data/tweets/science.txt",
-    "data/tweets/blm_old.txt",
-    "data/tweets/science_recent.txt",
-    "data/tweets/hb2_recent.txt"
-]
+    files = [
+        "data/tweets/ss2016.txt", 
+        "data/tweets/blm.txt", 
+        "data/tweets/hb2.txt", 
+        "data/tweets/indy500.txt", 
+        "data/tweets/okcvgsw.txt", 
+        "data/tweets/science.txt",
+        "data/tweets/blm_old.txt",
+        "data/tweets/science_recent.txt",
+        "data/tweets/hb2_recent.txt"
+    ]
 
-lda = LDA.LDA_model(files, num_topics, alpha = alpha, beta = beta)
+    lda = LDA.LDA_model(files, num_topics, alpha = alpha, beta = beta)
 
-print("Training")
-lda.train(training)
-print("Done training")
+    print("Training")
+    lda.train(training)
+    print("Done training")
 
-if preview_topics:
-	lda.preview_topics()
+    if preview_topics:
+        lda.preview_topics()
 
-if preview_documents:
-	lda.preview_documents()
+    if preview_documents:
+        lda.preview_documents()
 
-if sts:
-	m = lda.origin_topic_count()
-	chisq, p, dof, expected = stats.chi2_contingency(m)
-	print("Chi-square test of independence over topics and origins:")
-	print(chisq, p, dof)
-	print("Chi-square test of independence over categories and origins:")
-	print(lda.eval_categories())
+    if sts:
+        m = lda.origin_topic_count()
+        chisq, p, dof, expected = stats.chi2_contingency(m)
+        print("Chi-square test of independence over topics and origins:")
+        print(chisq, p, dof)
+        print("Chi-square test of independence over categories and origins:")
+        print(lda.eval_categories())
+        
+if __name__ == '__main__':
+    args = sys.argv
+    main(args)

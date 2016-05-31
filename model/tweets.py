@@ -7,12 +7,19 @@ import re
 
 class Tweet:
     def __init__(self, place="", text="", date=""):
+        '''
+        Initialize Tweet object with place, text, and date.
+        Creates hashtag and cleans text.
+        '''
         self.place = place
         self.text = self.clean_text(text)
         self.date = date
-        self.hashtag = self.get_hashtag(self.text)
         
     def clean_text(self,text):
+        '''
+        Takes text and removes hashtags, @'s, links, and punctuation.
+        Also removes stop words and words that have fewer than 3 letters. 
+        '''
         stops = self.load_stops('data/stop_words.txt')
         new_txt = []
         txt = text.split()
@@ -38,6 +45,9 @@ class Tweet:
         return s
     
     def load_stops(self, filename):
+        '''
+        Loads a list of stop words to ignore in tweets from filename.
+        '''
         f = open(filename, 'r')
         stops = []
         for l in f.readlines():
@@ -71,39 +81,6 @@ class Tweet:
     
     def get_date(self):
         return self.date
-    
-    def get_hashtag(self, text):
-        hashtag = ""
-        in_hashtag = False
-        for letter in text:
-            if in_hashtag:
-                if letter == " ":
-                    in_hashtag = False
-                    break
-                else:
-                    hashtag += letter
-            if letter == "#":
-                in_hashtag = True
-                
-        return hashtag
-                
-    
+                  
     def __str__(self):
-        return "(" + self.place + ", " + self.text + ", " + self.date + ")"
-        
-    
-
-def load_tweets(filename, delimiter):
-    tweets = []
-    f = open(filename, 'r')
-    for l in f.readlines():
-        line = l.strip().split(delimiter)
-        tweet = Tweet(place=line[0], text=line[1], date=line[2])
-        tweets.append(tweet)
-        
-    return tweets
-
-if __name__ == "__main__":
-    tweets = load_tweets("twitterLab/data/mn.txt", "\t")
-    print("We have", len(tweets), "tweets")
-    print(tweets[10])
+        return "(" + self.place + ", " + self.text + ", " + self.date + ")"        
