@@ -6,6 +6,7 @@ from collections import Counter
 import scipy as sp
 
 class LDA_model:
+    """Sets the paramters of the model, and loads the all of the tweets from the given files"""
     def __init__(self, documents_filepaths, k, alpha =.5, beta =.5):
         self.k = k
         self.documents = self.get_docs(documents_filepaths, "\t")
@@ -56,7 +57,10 @@ class LDA_model:
 
         
     def improve_topics(self):
-    #Gibbs sampling
+        """One iteration of Gibbs sampling for each word w in document d,
+        forgets current topic assignment, and chooses new one with probability
+        of assignment to topic t proportional to p(t | d)p(w |t)"""
+        
         for i in range(len(self.documents)):
             document = self.documents[i]
             topics_list = document.get_topics()
